@@ -57,8 +57,15 @@ onMounted(() => {
       </button>
     </div>
     <div class="text-center my-2 mb-3">
-      <p v-if="store.loading" class="mt-1 font-semibold">Loading...</p>
-      <p v-if="store.error" class="text-red-600 p-1">{{ store.error }}</p>
+      <div v-if="store.loading" class="flex justify-center">
+        <div
+          class="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"
+        ></div>
+      </div>
+
+      <p v-if="store.error" class="text-red-600 p-1">
+        {{ store.error }}
+      </p>
     </div>
     <div
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 m-2 p-1"
