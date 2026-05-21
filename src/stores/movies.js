@@ -9,6 +9,9 @@ export const useMovieStore = defineStore("movie", () => {
   const currentindex = ref(0);
   const watchlist = ref([]);
   const activefilter = ref("all");
+  const perpage = 6;
+  const currentpage = ref(1);
+
   async function fetchMovies(search) {
     try {
       loading.value = true;
@@ -82,6 +85,14 @@ export const useMovieStore = defineStore("movie", () => {
       currentindex.value = movies.value.length - 1;
     }
   }
+  const totalpage = computed(() => {
+    return Math.ceil(movies.value.length / perpage);
+  });
+  const pagination = computed(() => {
+    const start = (currentpage.value - 1) * perpage;
+    const end = currentpage.value * perpage;
+    return filterMovies.value.slice(start, end);
+  });
   function opeanmodal(id) {
     const index = movies.value.findIndex((m) => m.id === id);
     currentindex.value = index;
@@ -93,7 +104,22 @@ export const useMovieStore = defineStore("movie", () => {
     }
     return movies.value.filter((m) => m.type === activefilter.value);
   });
+  function nextpage() {
+    if (currentpage.value < totalpage.value) {
+      currentpage.value++;
+    } else {
+      currentpage.value = 1;
+    }
+  }
+  function previouspage() {
+    if (currentpage.value > 0) {
+      currentpage.value--;
+    } else {
+      currentpage.value = totalpage.value;
+    }
+  }
   return {
+    totalpage,
     movies,
     loading,
     error,
@@ -111,5 +137,9 @@ export const useMovieStore = defineStore("movie", () => {
     currentindex,
     activefilter,
     filterMovies,
+    pagination,
+    currentpage,
+    nextpage,
+    previouspage,
   };
 });

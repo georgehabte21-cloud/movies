@@ -70,7 +70,7 @@ onMounted(() => {
     <div
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 m-2 p-1"
     >
-      <div v-for="movie in store.filterMovies" :key="movie.id">
+      <div v-for="movie in store.pagination" :key="movie.id">
         <img
           :src="movie.poster"
           class="w-full h-64 object-cover"
@@ -86,6 +86,17 @@ onMounted(() => {
           ADD
         </button>
       </div>
+    </div>
+    <div class="flex gap-4 justify-center pb-4">
+      <button class="text-2xl hover:-translate-x-2" @click="store.previouspage">
+        ⬅
+      </button>
+      <span class="font-semibold"
+        >{{ store.currentpage }}/{{ store.totalpage }}</span
+      >
+      <button class="text-2xl hover:translate-x-2" @click="store.nextpage">
+        ➡
+      </button>
     </div>
     <Modal
       :showmodal="store.showmodal"
