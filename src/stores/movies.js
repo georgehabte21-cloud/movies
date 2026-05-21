@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 export const useMovieStore = defineStore("movie", () => {
   const movies = ref([]);
   const showmodal = ref(false);
@@ -8,6 +8,7 @@ export const useMovieStore = defineStore("movie", () => {
   const error = ref("");
   const currentindex = ref(0);
   const watchlist = ref([]);
+  const activefilter = ref("all");
   async function fetchMovies(search) {
     try {
       loading.value = true;
@@ -86,6 +87,12 @@ export const useMovieStore = defineStore("movie", () => {
     currentindex.value = index;
     showmodal.value = true;
   }
+  const filterMovies = computed(() => {
+    if (activefilter.value === "all") {
+      return movies.value;
+    }
+    return movies.value.filter((m) => m.type === activefilter.value);
+  });
   return {
     movies,
     loading,
@@ -102,5 +109,7 @@ export const useMovieStore = defineStore("movie", () => {
     prevposter,
     opeanmodal,
     currentindex,
+    activefilter,
+    filterMovies,
   };
 });
