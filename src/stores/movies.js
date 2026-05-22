@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
 export const useMovieStore = defineStore("movie", () => {
   const movies = ref([]);
   const showmodal = ref(false);
@@ -71,20 +71,24 @@ export const useMovieStore = defineStore("movie", () => {
     watchlist.value = watchlist.value.filter((w) => w.id !== id);
     savewatchlist();
   }
-  function nextposter() {
-    if (currentindex.value < movies.value.length - 1) {
+  function upholdkey(event) {
+    if (!showmodal.value) return;
+    if (event.key === "Escape") {
+      showmodal.value = false;
+    }
+    if (event.key === "ArrowRight") {
       currentindex.value++;
-    } else {
-      currentindex.value = 0;
     }
-  }
-  function prevposter() {
-    if (currentindex.value > 0) {
+    if (event.key === "ArrowLeft") {
       currentindex.value--;
-    } else {
-      currentindex.value = movies.value.length - 1;
     }
   }
+  onMounted(() => {
+    window.addEventListener("keydown", upholdkey);
+  });
+  onUnmounted(() => {
+    window.removeEventListener("keydown", upholdkey);
+  });
   const totalpage = computed(() => {
     return Math.ceil(movies.value.length / perpage);
   });
@@ -98,6 +102,12 @@ export const useMovieStore = defineStore("movie", () => {
     currentindex.value = index;
     showmodal.value = true;
   }
+  function opeanmodalwa(id) {
+    const index = watchlist.value.findIndex((m) => m.id === id);
+    currentindex.value = index;
+    showmodal.value = true;
+  }
+
   const filterMovies = computed(() => {
     if (activefilter.value === "all") {
       return movies.value;
@@ -131,8 +141,8 @@ export const useMovieStore = defineStore("movie", () => {
     loadwatchlist,
     removewatchlist,
     showmodal,
-    nextposter,
-    prevposter,
+    // nextposter,
+    // prevposter,
     opeanmodal,
     currentindex,
     activefilter,
@@ -141,5 +151,7 @@ export const useMovieStore = defineStore("movie", () => {
     currentpage,
     nextpage,
     previouspage,
+    opeanmodalwa,
+    upholdkey,
   };
 });

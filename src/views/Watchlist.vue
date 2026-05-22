@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import Modal from "../components/Modal.vue";
 import { useMovieStore } from "../stores/movies";
 const store = useMovieStore();
 onMounted(() => {
@@ -17,8 +18,12 @@ onMounted(() => {
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3"
     >
       <div v-for="watch in store.watchlist" :key="watch.id" class="rounded">
-        <img :src="watch.poster" class="w-full h-64 object-contain" />
-        <p>{{ watch.tittle }}</p>
+        <img
+          :src="watch.poster"
+          class="w-full h-64 object-contain"
+          @click="store.opeanmodalwa(watch.id)"
+        />
+        <p>{{ watch.title }}</p>
         <p>{{ watch.year }}</p>
         <button
           class="bg-red-300 p-1 rounded-lg"
@@ -28,5 +33,12 @@ onMounted(() => {
         </button>
       </div>
     </div>
+    <Modal
+      :movie="store.watchlist"
+      :currentindex="store.currentindex"
+      :showmodal="store.showmodal"
+      @close="store.showmodal = false"
+      @updateindex="store.currentindex = $event"
+    />
   </div>
 </template>

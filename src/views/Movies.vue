@@ -1,10 +1,36 @@
 <script setup>
 import Modal from "../components/Modal.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useMovieStore } from "../stores/movies";
 const store = useMovieStore();
 onMounted(() => {
   store.loadmovies();
+});
+function upholdkey(event) {
+  if (!store.showmodal) return;
+  if (event.key === "Escape") {
+    store.showmodal = false;
+  }
+  if (event.key === "ArrowRight") {
+    if (store.currentindex < store.movies.length - 1) {
+      store.currentindex++;
+    } else {
+      store.currentindex = 0;
+    }
+  }
+  if (event.key === "ArrowLeft") {
+    if (store.currentindex > 0) {
+      store.currentindex--;
+    } else {
+      store.currentindex = store.movies.length - 1;
+    }
+  }
+}
+onMounted(() => {
+  window.addEventListener("keydown", upholdkey);
+});
+onUnmounted(() => {
+  window.removeEventListener("keydown", upholdkey);
 });
 </script>
 <template>
@@ -103,8 +129,7 @@ onMounted(() => {
       :movie="store.movies"
       :currentindex="store.currentindex"
       @close="store.showmodal = false"
-      @next="store.nextposter"
-      @prev="store.prevposter"
+      @updateindex="store.currentindex = $event"
     />
   </div>
 </template>

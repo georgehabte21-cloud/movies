@@ -4,14 +4,32 @@ const props = defineProps({
   showmodal: Boolean,
   currentindex: Number,
 });
-const emit = defineEmits(["close", "next", "prev"]);
+const emits = defineEmits(["close", "updateindex"]);
+function nextposter() {
+  let next;
+  if (props.currentindex < props.movie.length - 1) {
+    next = props.currentindex + 1;
+  } else {
+    next = 0;
+  }
+  emits("updateindex", next);
+}
+function prevposter() {
+  let prev;
+  if (props.currentindex > 0) {
+    prev = props.currentindex - 1;
+  } else {
+    prev = props.movie.length - 1;
+  }
+  emits("updateindex", prev);
+}
 </script>
 <template>
   <div
     v-if="props.showmodal"
     class="fixed bg-black/80 inset-0 flex justify-center items-center"
   >
-    <button class="absolute top-5 right-5 text-2xl" @click="emit('close')">
+    <button class="absolute top-5 right-5 text-2xl" @click="emits('close')">
       ✖
     </button>
     <div class="text-center">
@@ -29,7 +47,7 @@ const emit = defineEmits(["close", "next", "prev"]);
         {{ props.movie[props.currentindex]?.year }}
       </p>
     </div>
-    <button class="absolute left-5 text-2xl" @click="emit('prev')">⬅</button>
-    <button class="absolute right-5 text-2xl" @click="emit('next')">➡</button>
+    <button class="absolute left-5 text-2xl" @click="prevposter">⬅</button>
+    <button class="absolute right-5 text-2xl" @click="nextposter">➡</button>
   </div>
 </template>
